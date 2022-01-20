@@ -1,0 +1,95 @@
+//Brute force
+//Normal Recursion
+//TC->Exponential
+//SC->O(1)
+/*int solver(int n,vector<int>& nums)
+    {
+        if(n==0)
+        return nums[0];
+        if(n<0)
+        {
+            return 0;
+        }
+        
+        int pick=nums[n]+solver(n-2,nums);
+        int not_pick=0+solver(n-1,nums);
+        
+        return max(pick,not_pick);
+    }
+    int rob(vector<int>& nums) 
+    {
+        return solver(nums.size()-1,nums);
+    }*/
+   //Bettter Aproach
+   //Memoization Methord
+   //Bottom up
+   //TC->O(N)
+   //SC->O(N)+O(N)
+    /*int solver(int n,vector<int>& nums,vector<int> &dp)
+    {
+        if(n==0)
+        return nums[0];
+        if(n<0)
+        return 0;
+        
+        if(dp[n]!=-1)
+        return dp[n];
+        
+        int pick=nums[n]+solver(n-2,nums,dp);
+        int not_pick=0+solver(n-1,nums,dp);
+        
+        return dp[n]=max(pick,not_pick);
+        
+    }
+    //Tabular Methord
+    //TC->O(N)
+    //SC->O(N)
+    int rob(vector<int>& nums)
+    {
+        vector<int> dp(nums.size(),-1);
+        return solver(nums.size()-1,nums,dp);
+    }*/
+    
+    /*int rob(vector<int>& nums)
+    {
+        vector<int> dp(nums.size(),-1);
+        dp[0]=nums[0];
+        
+        for(int i=1;i<nums.size();i++)
+        {
+            int pick=nums[i];
+            if(i>1)
+            {
+                pick=pick+dp[i-2];
+            }
+            int not_pick=0+dp[i-1];
+            
+            dp[i]=max(pick,not_pick);
+        }
+        return dp[nums.size()-1];    
+    }*/
+    //More optimized
+    //Tc->O(N)
+    //SC->O(1)
+    int rob(vector<int>& nums)
+    {
+        int prev1=nums[0];
+        int prev2=0;
+        int curr;
+        for(int i=1;i<nums.size();i++)
+        {
+            int pick=nums[i];
+            if(i>1)
+            {
+                pick=pick+prev2;
+            }
+            int not_pick=0+prev1;
+            
+            curr=max(pick,not_pick);
+            prev2=prev1;
+            prev1=curr;
+            
+            
+        }
+        return prev1;   
+    }
