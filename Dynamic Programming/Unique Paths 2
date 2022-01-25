@@ -1,0 +1,143 @@
+//Brute Force
+//Tc->exponential
+Sc->O(lengths of n and m)
+/*int solver(vector<vector<int>> obstacleGrid,int i,int j)
+    {
+        if(i==0 && j==0)
+        return 1;
+        if(i<0 || j<0 || obstacleGrid[i][j]==1)
+        return 0;
+        
+        int l=solver(obstacleGrid,i-1,j);
+        int up=solver(obstacleGrid,i,j-1);
+        
+        return l+up;
+    }
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
+    {
+        
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        if(obstacleGrid[0][0]==1)
+        return 0;    
+            
+        return solver(obstacleGrid,m-1,n-1);    
+    }*/
+    //Memoization
+    //Tc->O(N*M)
+    //SC->O(n-1)+(m-1)+O(N*M)
+    /*int solver(vector<vector<int>> obstacleGrid,int i,int j,vector<vector<int>>&dp)
+    {
+        if(i==0 && j==0)
+        return 1;
+        if(i<0 || j<0 || obstacleGrid[i][j]==1)
+        return 0;
+        if(dp[i][j]!=-1)
+        return dp[i][j];    
+        
+        int l=solver(obstacleGrid,i-1,j,dp);
+        int up=solver(obstacleGrid,i,j-1,dp);
+        
+        return dp[i][j]=l+up;
+    }
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
+    {
+        
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        if(obstacleGrid[0][0]==1)
+        return 0;    
+        vector<vector<int>>dp(m,vector<int>(n,-1));
+            
+        return solver(obstacleGrid,m-1,n-1,dp);    
+    }*/
+    //Tabulation 
+    //Tc->O(N*M)
+    //Sc->O(N*M)
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
+    {
+        //int mod=(int)(1e9+7);
+        int n=obstacleGrid.size();
+        int m=obstacleGrid[0].size();
+            
+        
+        vector<vector<long long int>>dp(n,vector<long long int>(m));
+        
+       
+            
+            for(int i=0;i<n;i++)
+            {
+                for(int j=0;j<m;j++)
+                {
+                    if(obstacleGrid[i][j]==1)
+                    dp[i][j]=0;
+                    else if(i==0 && j==0)
+                    dp[i][j]=1;
+                   
+                    else
+                    {
+                        int l=0;
+                        int up=0;
+                        if(i>0)
+                        {
+                            up=dp[i-1][j];
+                        }
+                        if(j>0)
+                        {
+                            l=dp[i][j-1];
+                        }
+
+                        dp[i][j]=(l+up); //%mod;
+                    }   
+                }
+            }
+            return dp[n-1][m-1];
+        
+        }
+    //Tabulation + space otimized
+    //Tc->O(N*M)
+    //Sc->O(N+M)
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
+    {
+        //int mod=(int)(1e9+7);
+        int n=obstacleGrid.size();
+        int m=obstacleGrid[0].size();
+            
+        
+        vector<long long int>prev(m);
+        
+       
+            
+            for(int i=0;i<n;i++)
+            {
+                vector<long long int>curr(m);
+                for(int j=0;j<m;j++)
+                {
+                    if(obstacleGrid[i][j]==1)
+                    curr[j]=0;
+                    else if(i==0 && j==0)
+                    curr[j]=1;
+                   
+                    else
+                    {
+                        int l=0;
+                        int up=0;
+                        if(i>0)
+                        {
+                            up=prev[j];
+                        }
+                        if(j>0)
+                        {
+                            l=curr[j-1];
+                        }
+
+                        curr[j]=(l+up); //%mod;
+                    } 
+                    
+                }
+                prev=curr;
+                
+            }
+            return prev[m-1];
+        
+        }
