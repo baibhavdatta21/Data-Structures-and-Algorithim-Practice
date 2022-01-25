@@ -1,0 +1,130 @@
+//Brute Force
+//Tc->Expo
+//Sp->O(length of whole stack space)
+/*int solver(vector<vector<int>> grid,int i,int j)
+    {
+        if(i==0 && j==0)
+        return grid[i][j];
+        
+        if(i<0 || j<0)
+        return 1e9+7;
+        
+        //sum=sum+grid[i][j];
+        int up = grid[i][j] + solver(grid,i-1,j);
+        int l = grid[i][j] + solver(grid,i,j-1);
+        
+        return min(up,l);
+    }
+    int minPathSum(vector<vector<int>>& grid)
+    {
+        int n=grid.size();
+        int m=grid[0].size();
+        int sum=0;
+        return solver(grid,n-1,m-1);
+    }*/
+    //Memoization
+    //Tc->T(N*M)
+    //SC->O(N-1+M-1)+O(N*M)
+    /*int solver(vector<vector<int>> grid,int i,int j,vector<vector<int>> &dp)
+    {
+        if(i==0 && j==0)
+        return grid[i][j];
+        
+        if(i<0 || j<0)
+        return INT_MAX;
+        
+        if(dp[i][j]!=-1)
+        return dp[i][j];    
+        
+        //sum=sum+grid[i][j];
+        int up = solver(grid,i-1,j,dp);
+        int l = solver(grid,i,j-1,dp);
+        int ans=min(up,l)+grid[i][j];
+        return dp[i][j]=ans;
+    }
+    int minPathSum(vector<vector<int>>& grid)
+    {
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<int>>dp(n,vector<int>(m,-1));
+        return solver(grid,n-1,m-1,dp);
+    }*/
+    //Tabular
+    //Tc->O(N*M)
+    //SC->O(N*M)
+    
+     /*int minPathSum(vector<vector<int>>& grid)
+     { 
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n,0));
+        
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(i==0 && j==0)
+                dp[i][j]=grid[i][j];
+                else
+                {
+                    int l=grid[i][j];
+                    int up=grid[i][j];
+                    if(i>0)
+                    up=up+dp[i-1][j];
+                    else
+                    up=up+1e9+7; 
+                    
+                    if(j>0)
+                    l=l+dp[i][j-1];
+                    else
+                    l=l+1e9+7;   
+                    
+                    dp[i][j]=min(l,up);
+                }   
+            }
+        }
+         return dp[m-1][n-1];
+
+        
+         
+     }*/
+     //Tabular space optimized
+     //O(N*M)
+     //O(N)+O(M)
+      int minPathSum(vector<vector<int>>& grid)
+     {
+          int n=grid.size();
+          int m=grid[0].size();
+          
+          vector<int>prev(m);
+          vector<int>curr(m);
+          
+          for(int i=0;i<n;i++)
+          {
+              
+              for(int j=0;j<m;j++)
+              {
+                  if(i==0 && j==0)
+                  curr[j]=grid[i][j];
+                  else
+                  {
+                      int l=grid[i][j];
+                      int up=grid[i][j];
+                      if(i>0)
+                      up=up+prev[j];
+                      else
+                      up=up+1e9+7;
+                      if(j>0)
+                      l=l+curr[j-1];
+                      else
+                      l=l+1e9+7;
+                      
+                      curr[j]=min(l,up);
+                  }
+                      
+              }
+              prev=curr;
+          }
+          return prev[m-1];
+          
+     }
