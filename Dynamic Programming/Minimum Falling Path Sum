@@ -1,0 +1,170 @@
+//Brute
+//Recursive
+//Tc->O(3 to the power m)
+//SC->O(1)
+/*int solver(int i, int j,vector<vector<int>>& matrix)
+    {
+        if(j<0 || j>matrix[0].size()-1)
+        return INT_MAX-100;
+        
+        if (i>matrix.size()-1)
+        return 0;
+        
+        
+        
+        
+            
+      
+       int l=matrix[i][j]+solver(i+1,j-1,matrix);
+       int d=matrix[i][j]+solver(i+1,j,matrix);
+       int r=matrix[i][j]+solver(i+1,j+1,matrix);
+
+       return min(l,min(r,d));
+           
+       
+    }
+    int minFallingPathSum(vector<vector<int>>& matrix) 
+    {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int mini=INT_MAX;
+        for(int j=0;j<m;j++)
+        {
+            mini=min(mini,solver(0,j,matrix));
+        }
+        return mini;
+    }*/
+    
+    //Memoization
+    //TC->O(N*M)
+    //SC->O(N*M)(N)
+    /*int solver(int i, int j,vector<vector<int>>& matrix,vector<vector<int>>& dp)
+    {
+        if(j<0 || j>matrix[0].size()-1)
+        return INT_MAX-100;
+        
+        if (i>matrix.size()-1)
+        return 0;
+        
+        if(dp[i][j]!=INT_MIN)
+        return dp[i][j];    
+        
+        
+            
+      
+       int l=matrix[i][j]+solver(i+1,j-1,matrix,dp);
+       int d=matrix[i][j]+solver(i+1,j,matrix,dp);
+       int r=matrix[i][j]+solver(i+1,j+1,matrix,dp);
+
+       return dp[i][j]=min(l,min(r,d));
+           
+       
+    }
+    int minFallingPathSum(vector<vector<int>>& matrix) 
+    {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int mini=INT_MAX;
+        vector<vector<int>>dp(n,vector<int>(m,INT_MIN));
+        for(int j=0;j<m;j++)
+        {
+            mini=min(mini,solver(0,j,matrix,dp));
+        }
+        return mini;
+    }*/
+    //Tabular
+    //TC->O(N*M)
+    //TC->O(N*M)
+    /*int minFallingPathSum(vector<vector<int>>& matrix)
+    {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int mini=INT_MAX;
+        vector<vector<int>>dp(n,vector<int>(m));
+        for(int j=0;j<m;j++)
+        dp[0][j]=matrix[0][j];
+        
+        
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                int d=matrix[i][j];
+                int l=matrix[i][j];
+                int r=matrix[i][j];
+                
+                if(j-1>=0)
+                l=l+dp[i-1][j-1];
+                else
+                l=l+1e8;    
+                
+                if(j+1<m)
+                d=d+dp[i-1][j+1];
+                else
+                d=d+1e8;
+                
+                r=r+dp[i-1][j];
+                
+                dp[i][j]=min(l,min(r,d));
+            }
+            
+        }
+        
+        
+        for(int j=0;j<m;j++)
+        {
+            mini=min(mini,dp[n-1][j]);
+        }
+        return mini;
+    }*/
+    //Tabular with space optimization
+    //O(N*M)
+   //SP(M*M)
+    /*int minFallingPathSum(vector<vector<int>>& matrix)
+    {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int mini=INT_MAX;
+        //vector<vector<int>>dp(n,vector<int>(m));
+        vector<int> cur(m,INT_MIN);
+        vector<int> prev(m,INT_MIN);
+        for(int j=0;j<m;j++)
+        prev[j]=matrix[0][j];
+        
+        
+        for(int i=1;i<n;i++)
+        {
+            
+            for(int j=0;j<m;j++)
+            {
+                int d=matrix[i][j];
+                int l=matrix[i][j];
+                int r=matrix[i][j];
+                
+                if(j-1>=0)
+                l=l+prev[j-1];
+                else
+                l=l+1e8;    
+                
+                if(j+1<m)
+                d=d+prev[j+1];
+                else
+                d=d+1e8;
+                
+                r=r+prev[j];
+                
+                cur[j]=min(l,min(r,d));
+            }
+            prev=cur;
+            
+            
+        }
+        
+        
+        for(int j=0;j<m;j++)
+        {
+            mini=min(mini,cur[j]);
+        }
+        return mini;
+    }*/
+};
