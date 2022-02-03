@@ -1,0 +1,123 @@
+//recursive
+//Tc->O(2^n)
+//Sc->O(n)
+bool solver(int i,vector<int>& nums,int target)
+    {
+        if(target==0)
+        return true;
+        
+        if(i==0)
+        {
+            if(nums[i]==target)
+            return true;
+            return false;
+        }
+        
+        int pick=false;
+        if(target>=nums[i])
+        pick=solver(i-1,nums,target-nums[i]);
+        int not_pick=solver(i-1,nums,target);
+        
+        return pick | not_pick;
+    }
+    bool canPartition(vector<int>& nums) 
+    {
+        int n=nums.size();
+          
+        int sum=0;
+        for(int i=0;i<n;i++)
+        {
+            sum=sum+nums[i];
+        }
+        if(sum%2!=0)
+        return false; 
+        sum=sum/2;
+        return solver(n-1,nums,sum);
+    }
+    
+//Memoizatrion
+//tc->O(n*target)
+//sc->(n*target)+o(n)
+
+bool solver(int i,vector<int>& nums,int target,vector<vector<int>>&dp)
+    {
+        if(target==0)
+        return true;
+        
+        if(i==0)
+        {
+            if(nums[i]==target)
+            return true;
+            return false;
+        }
+        
+        if(dp[i][target]!=-1)
+        return dp[i][target];
+        
+        int pick=false;
+        if(target>=nums[i])
+        pick=solver(i-1,nums,target-nums[i],dp);
+        int not_pick=solver(i-1,nums,target,dp);
+        
+        return dp[i][target]=pick | not_pick;
+    }
+    bool canPartition(vector<int>& nums) 
+    {
+        int n=nums.size();
+        int sum=0;
+        for(int i=0;i<n;i++)
+        {
+            sum=sum+nums[i];
+        }
+        if(sum%2!=0)
+        return false; 
+        sum=sum/2;
+        vector<vector<int>>dp(n,vector<int>(sum+1,-1));
+        return solver(n-1,nums,sum,dp);
+    }*/
+    
+bool isSubsetSum(int N, vector<int>arr, int sum)
+{
+    vector<vector<bool>>dp(N,vector<bool>(sum+1,0));
+    for(int i=0;i<N;i++)
+    {
+        dp[i][0]=true;
+    }
+    dp[0][arr[0]]=true;
+
+    for(int i=1;i<N;i++)
+    {
+        for(int j=1;j<=sum;j++)
+        {
+            bool pick=false;
+
+            if(j>=arr[i])
+                pick=dp[i-1][j-arr[i]];
+
+            bool not_pick=dp[i-1][j];
+
+            dp[i][j]=pick|not_pick;
+
+        }
+    }
+    return dp[N-1][sum];
+ }   
+//Tabular
+//O(N*target)
+//O(N*target)
+bool canPartition(vector<int>& nums,int n)
+ {
+        
+           
+    int sum=0;
+    for(int i=0;i<n;i++)
+    {
+        sum=sum+nums[i];
+    }
+
+    if(sum%2!=0)
+        return false; 
+    int target=sum/2;
+    //vector<vector<bool>>dp(n,vector<bool>(target+1,0));
+    return isSubsetSum(n,nums,target);
+}
