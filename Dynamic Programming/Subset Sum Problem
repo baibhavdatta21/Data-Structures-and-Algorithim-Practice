@@ -1,0 +1,144 @@
+//Brute
+//Tc->O(2^n)
+//Sc->O(N)
+/*bool solver(int i,int arr[],int sum)
+    {
+        if(i==0)
+        {
+            if(arr[i]==sum)
+            return true;
+            else
+            return false;
+        }
+        
+        if(sum==0)
+        return true;
+        bool pick=false;
+        if(sum>=arr[i])
+        pick=solver(i-1,arr,sum-arr[i]);
+        bool not_pick=solver(i-1,arr,sum);
+        
+        return pick or not_pick;
+    }
+    bool isSubsetSum(int N, int arr[], int sum){
+        // code here 
+        return solver(N-1,arr,sum);
+    }*/
+    
+    //Memoization
+    //Tc->O(N*sum)
+    //Sc->O(N*sum)+O(N)
+    /*bool solver(int i,int arr[],int sum, vector<vector<int>>&dp)
+    {
+        if(i==0)
+        {
+            if(arr[i]==sum)
+            return true;
+            else
+            return false;
+        }
+        
+        if(sum==0)
+        return true;
+        
+        if(dp[i][sum]!=-1)
+        return dp[i][sum];
+        
+        bool pick=false;
+        if(sum>=arr[i])
+        pick=solver(i-1,arr,sum-arr[i],dp);
+        bool not_pick=solver(i-1,arr,sum,dp);
+        
+        return dp[i][sum]=pick | not_pick;
+    }
+    bool isSubsetSum(int N, int arr[], int sum){
+        // code here 
+        vector<vector<int>>dp(N,vector<int>(sum+1,-1));
+        return solver(N-1,arr,sum,dp);
+    }*/
+    //Tabular
+    //Tc->O(n*sum)
+    //Sc->O(N*sum)
+    /*
+    bool isSubsetSum(int N, int arr[], int sum)
+    {
+        vector<vector<bool>>dp(N,vector<bool>(sum+1,0));
+        for(int i=0;i<N;i++)
+        {
+            dp[i][0]=true;
+        }
+        dp[0][arr[0]]=true;
+        
+        for(int i=1;i<N;i++)
+        {
+            for(int j=1;j<=sum;j++)
+            {
+                bool pick=false;
+                
+                if(j>=arr[i])
+                pick=dp[i-1][j-arr[i]];
+                
+                bool not_pick=dp[i-1][j];
+                
+                dp[i][j]=pick|not_pick;
+        
+            }
+        }
+        return dp[N-1][sum];
+        
+    }
+    //Tabular Space optimized
+    //Tc->O(N*Sum)
+    //Sc->O(N)+O(N)
+    bool isSubsetSum(int N, int arr[], int sum)
+    {
+        vector<vector<bool>>dp(N,vector<bool>(sum+1,0));
+        for(int i=0;i<N;i++)
+        {
+            dp[i][0]=true;
+        }
+        dp[0][arr[0]]=true;
+        
+        for(int i=1;i<N;i++)
+        {
+            for(int j=1;j<=sum;j++)
+            {
+                bool pick=false;
+                
+                if(j>=arr[i])
+                pick=dp[i-1][j-arr[i]];
+                
+                bool not_pick=dp[i-1][j];
+                
+                dp[i][j]=pick|not_pick;
+        
+            }
+        }
+        return dp[N-1][sum];
+        
+    }*/
+    bool isSubsetSum(int N, int arr[], int sum)
+    {
+        vector<bool> prev(sum+1,0), cur(sum+1,0);
+        prev[0]=cur[0]=true;
+        prev[arr[0]]=true;
+        
+        for(int i=1;i<N;i++)
+            {
+                for(int j=1;j<=sum;j++)
+                {
+                    bool pick=false;
+                    
+                    if(j>=arr[i])
+                    pick=prev[j-arr[i]];
+                    
+                    bool not_pick=prev[j];
+                    
+                    cur[j]=pick|not_pick;
+            
+                }
+                prev=cur;
+            }
+            return prev[sum];
+        
+    }
