@@ -1,0 +1,121 @@
+//Memoization
+//Tc-O(N*M)
+//Sc->O(N*M)+O(N)
+int mod=(int)(1e9+7);
+/*int solver(int i,vector<int>& nums,int target, vector<vector<int>>&dp)
+{
+    if(i==0)
+    {
+        if(nums[0]==target && target==0)
+            return 2;
+        if(target==0)
+            return 1;
+        if(target==nums[0])
+            return 1;
+        return 0; 
+    }
+    if(dp[i][target]!=-1)
+    return dp[i][target];
+
+
+    int pick=0;
+    if(target>=nums[i])
+        pick=solver(i-1,nums,target-nums[i],dp);
+
+    int not_pick=solver(i-1,nums,target,dp);
+
+    return dp[i][target]=(pick + not_pick)%mod;
+}
+int countPartitions(int n, int d, vector<int> &arr)
+{
+    // Your code goes here
+    int sum=0;
+    for(int i=0;i<n;i++)
+    {
+        sum=sum+arr[i];
+    }
+    int target=(sum-d)/2;
+    if(sum-d<0 || (sum-d)%2)
+    return false;    
+    vector<vector<int>>dp(n,vector<int>(target+1,-1));
+    return solver(n-1,arr,target,dp);
+}*/
+
+//Tabular
+//O(M*tar)
+//O(M*tar)
+/*int countPartitions(int n, int d, vector<int> &num)
+{
+    int sum=0;
+    for(int i=0;i<n;i++)
+    {
+        sum=sum+num[i];
+    }
+    int tar=(sum-d)/2;
+    
+    if(sum-d<0 || (sum-d)%2)
+    return false;
+   vector<vector<int>>dp(num.size(),vector<int>(tar+1,0));
+   
+    if(num[0]==0)
+    dp[0][0]=2;
+    else 
+    dp[0][0]=1;
+    if(num[0]!=0 && num[0]<=tar)
+    dp[0][num[0]]=1;   
+   
+    for(int i=1;i<num.size();i++)
+    {
+		for(int j=0;j<=tar;j++)
+        {
+            int pick=0;
+            if(j>=num[i])
+            pick=dp[i-1][j-num[i]];
+            
+			int not_pick=dp[i-1][j];
+            
+            dp[i][j]=(pick + not_pick)%mod;
+        }
+    }
+    return dp[num.size()-1][tar];
+}*/
+//Tabular space optimized
+//TC->O(N*target)
+//sc->O(target)+O(target)
+int countPartitions(int n, int d, vector<int> &num)
+{
+    int sum=0;
+    for(int i=0;i<n;i++)
+    {
+        sum=sum+num[i];
+    }
+    int tar=(sum-d)/2;
+    
+    if(sum-d<0 || (sum-d)%2)
+    return false;
+   vector<int>prev(tar+1,0);
+   vector<int>cur(tar+1,0);
+   
+    if(num[0]==0)
+    prev[0]=2;
+    else 
+    prev[0]=1;
+    if(num[0]!=0 && num[0]<=tar)
+    prev[num[0]]=1;   
+   
+    for(int i=1;i<num.size();i++)
+    {
+		for(int j=0;j<=tar;j++)
+        {
+            int pick=0;
+            if(j>=num[i])
+            pick=prev[j-num[i]];
+            
+			int not_pick=prev[j];
+            
+            cur[j]=(pick + not_pick)%mod;
+        }
+        prev=cur;
+    }
+    return prev[tar];
+}
