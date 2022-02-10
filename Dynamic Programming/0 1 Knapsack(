@@ -1,0 +1,145 @@
+//Recursive
+//Tc->O(2^n)
+//Sc->O(N)
+int solver(int i,int w,vector<int> wt, vector<int> val)
+    {
+        if(i==0)
+        {
+            if(wt[0]<=w)
+            return val[0];
+            return 0;
+        }  
+        
+        
+        int not_pick=0+solver(i-1,w,wt,val);
+        int pick=INT_MIN;
+        if(w>=wt[i])
+        pick=val[i]+solver(i-1,w-wt[i],wt,val);
+        
+        return max(pick,not_pick);
+    }
+int knapsack(vector<int> wt, vector<int> val, int n, int W) 
+{
+	// Write your code here
+     return solver(n-1,W,wt,val);
+    
+}*/
+//Memoization
+//Tc->O(N*M)
+//Sc->O(N)+O(N*M)
+/*int solver(int i,int w,vector<int> wt, vector<int> val, vector<vector<int>> &dp)
+{
+    if(i==0)
+    {
+        if(wt[0]<=w)
+            return val[0];
+        return 0;
+    }  
+
+    if(dp[i][w]!=-1)
+        return dp[i][w];
+
+    int not_pick=0+solver(i-1,w,wt,val,dp);
+    int pick=INT_MIN;
+    if(w>=wt[i])
+        pick=val[i]+solver(i-1,w-wt[i],wt,val,dp);
+
+    return dp[i][w]=max(pick,not_pick);
+}
+int knapsack(vector<int> wt, vector<int> val, int n, int W) 
+{
+	// Write your code here
+     vector<vector<int>> dp(n,vector<int>(W+1,-1));
+     return solver(n-1,W,wt,val,dp);
+    
+}*/
+
+//Tabulation
+//Tc->O(N*M)
+//Sc->O(N*M)
+/*int knapsack(vector<int> wt, vector<int> val, int n, int W) 
+{
+    vector<vector<int>> dp(n,vector<int>(W+1,0));
+
+    for(int i=wt[0];i<=W;i++)
+    {
+        dp[0][i]=val[0];
+    }
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=W;j++)
+        {
+            int not_pick=0+dp[i-1][j];
+
+            int pick=INT_MIN;
+            if(j>=wt[i])
+                pick=val[i]+dp[i-1][j-wt[i]];
+
+            dp[i][j]=max(pick,not_pick);
+
+        }
+    }
+    return dp[n-1][W];
+}*/
+
+
+//Tabulation with space optimization
+//Tc->O(N*M)
+//Sc->O(M)+O(M)
+/*int knapsack(vector<int> wt, vector<int> val, int n, int W) 
+{
+    vector<int> prev(W+1,0);
+    vector<int> cur(W+1,0);
+
+    for(int i=wt[0];i<=W;i++)
+    {
+        prev[i]=val[0];
+    }
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=W;j++)
+        {
+            int not_pick=0+prev[j];
+
+            int pick=INT_MIN;
+            if(j>=wt[i])
+                pick=val[i]+prev[j-wt[i]];
+
+            cur[j]=max(pick,not_pick);
+
+        }
+        prev=cur;
+    }
+    return prev[W];
+}*/
+
+//Tabulation with goat level space optimization
+//Tc->O(N*M)
+//Sc->O(M)
+int knapsack(vector<int> wt, vector<int> val, int n, int W)
+{
+    vector<int> prev(W+1,0);
+
+    for(int i=wt[0];i<=W;i++)
+    {
+        prev[i]=val[0];
+    }
+    for(int i=1;i<n;i++)
+    {
+        for(int j=W;j>=0;j--)
+        {
+            int not_pick=0+prev[j];
+
+            int pick=INT_MIN;
+            if(j>=wt[i])
+                pick=val[i]+prev[j-wt[i]];
+
+            prev[j]=max(pick,not_pick);
+
+        }
+        //prev=cur;
+    }
+    return prev[W];
+
+
+}
