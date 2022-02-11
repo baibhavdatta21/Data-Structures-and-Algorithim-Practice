@@ -1,0 +1,123 @@
+//Recursion
+//Tc->More than O(2^n)
+//SC->more thanO(N)
+*int solver(int i,vector<int>& coins, int amount)
+    {
+        if(i==0)
+        {
+            if(amount%coins[i]==0)
+            return amount/coins[i];
+            else
+            return 1e9;
+        }
+        int pick=INT_MAX;
+        if(amount>=coins[i])
+        pick=1+solver(i,coins,amount-coins[i]);
+        int not_pick=0+solver(i-1,coins,amount);
+        
+        return min(pick,not_pick);
+    }
+    int coinChange(vector<int>& coins, int amount)
+    {
+        int n=coins.size();
+        if(solver(n-1,coins,amount)==1e9)
+        return -1;
+        else
+        return solver(n-1,coins,amount);
+    }*/
+    //Memoization
+    //Tc->More than O(n*target)
+    //SC->more thanO(N)+(n*target)
+    /*int solver(int i,vector<int>& coins, int amount,vector<vector<int>>&dp)
+    {
+        if(i==0)
+        {
+            if(amount%coins[i]==0)
+            return amount/coins[i];
+            else
+            return 1e9;
+        }
+        if(dp[i][amount]!=-1)
+        return dp[i][amount];    
+        int pick=INT_MAX;
+        if(amount>=coins[i])
+        pick=1+solver(i,coins,amount-coins[i],dp);
+        int not_pick=0+solver(i-1,coins,amount,dp);
+        
+        return dp[i][amount]=min(pick,not_pick);
+    }
+    int coinChange(vector<int>& coins, int amount)
+    {
+        int n=coins.size();
+        vector<vector<int>> dp(n,vector<int>(amount+1,-1));
+        if(solver(n-1,coins,amount,dp)==1e9)
+        return -1;
+        else
+        return solver(n-1,coins,amount,dp);
+    }*/
+    
+    //Tabulation
+    //Tc-> O(n*target)
+    //SC->O(n*target)
+     /*int coinChange(vector<int>& coins, int amount)
+     {
+         int n=coins.size();
+         vector<vector<int>> dp(n,vector<int>(amount+1,0));
+         for(int i=0;i<=amount;i++)
+         {
+             if(i%coins[0]==0)
+             dp[0][i]=i/coins[0];
+             else
+             dp[0][i]=1e9;
+         }
+         for(int i=1;i<n;i++)
+         {
+             for(int j=0;j<=amount;j++)
+             {
+                 int pick=1e9;
+                 if(j>=coins[i])
+                 pick=1+dp[i][j-coins[i]];
+                 int not_pick=dp[i-1][j];
+                 dp[i][j]=min(pick,not_pick);
+             }
+         }
+             
+          if(dp[n-1][amount]==1e9)
+          return -1;    
+          return dp[n-1][amount];
+     }*/
+    //Tabulation with sapce optimization
+    //Tc-> O(n*target)
+    //SC->O(target)+O(target)
+
+     int coinChange(vector<int>& coins, int amount)
+     {
+         int n=coins.size();
+         vector<int>prev(amount+1,0);
+         vector<int>cur(amount+1,0);
+          for(int i=0;i<=amount;i++)
+          {
+              if(i%coins[0]==0)
+              prev[i]=i/coins[0];
+              else
+              prev[i]=1e9;
+          }    
+              
+          for(int i=1;i<n;i++)
+         {
+             for(int j=0;j<=amount;j++)
+             {
+                 int pick=1e9;
+                 if(j>=coins[i])
+                 pick=1+cur[j-coins[i]];
+                 int not_pick=prev[j];
+                 cur[j]=min(pick,not_pick);
+             }
+              prev=cur;
+         }
+             
+          if(prev[amount]==1e9)
+          return -1;    
+          return prev[amount];
+
+     }
