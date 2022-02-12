@@ -1,0 +1,164 @@
+//Recursive 
+//TC->O(2n)
+//SC->O(n)
+
+int solver(int i,vector<int>& nums,int target)
+    {
+        if(i==0)
+        {
+            if(nums[0]==target && target==0)
+            return 2;
+            if(target==0)
+            return 1;
+            if(target==nums[0])
+            return 1;    
+
+            return 0;
+        }
+        
+        int pick=0;
+        if(target>=nums[i])
+        pick=solver(i-1,nums,target-nums[i]);
+        int not_pick=solver(i-1,nums,target);
+        
+        return pick+not_pick;
+    }
+        
+    int findTargetSumWays(vector<int>& nums, int target)
+    {
+        int sum=0;
+        int n=nums.size();
+        for(int i=0;i<n;i++)
+        {
+            sum=sum+nums[i];
+        }
+        int target2=(sum-target)/2;
+        if(target>sum || (sum-target)%2!=0)
+        return 0; 
+        
+        
+        return solver(n-1,nums,target2);
+    }
+    //Memoization
+    //TC->O(N*target)
+    //Sc->O(N)+O(N*Target)
+    int solver(int i,vector<int>& nums,int target,vector<vector<int>> &dp)
+    {
+        if(i==0)
+        {
+            if(nums[0]==target && target==0)
+            return 2;
+            if(target==0)
+            return 1;
+            if(target==nums[0])
+            return 1;    
+
+            return 0;
+        }
+        
+        if(dp[i][target]!=-1)
+        return dp[i][target];    
+        
+        int pick=0;
+        if(target>=nums[i])
+        pick=solver(i-1,nums,target-nums[i],dp);
+        int not_pick=solver(i-1,nums,target,dp);
+        
+        return dp[i][target]=pick+not_pick;
+    }
+        
+    int findTargetSumWays(vector<int>& arr, int d)
+    {
+        int sum=0;
+        int n=arr.size();
+        for(int i=0;i<n;i++)
+        {
+            sum=sum+arr[i];
+        }
+        int target=(sum-d)/2;
+        if(sum-d<0 || (sum-d)%2)
+        return 0;    
+        vector<vector<int>>dp(n,vector<int>(target+1,-1));
+        return solver(n-1,arr,target,dp);
+    }
+//Tabulation
+//Tc->O(N*target)
+//Sc->O(N*target)
+int findTargetSumWays(vector<int>& nums, int d)
+    {
+        int sum=0;
+        int n=nums.size();
+        for(int i=0;i<n;i++)
+        {
+            sum=sum+nums[i];
+        }
+        int target=(sum-d)/2;
+        if(sum-d<0 || (sum-d)%2)
+        return 0;    
+        vector<vector<int>>dp(n,vector<int>(target+1,0));
+        if(nums[0]==0)
+        dp[0][0]=2;
+        else 
+        dp[0][0]=1;
+        if(nums[0]!=0 && nums[0]<=target)
+        dp[0][nums[0]]=1;
+        
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<=target;j++)
+            {
+                int pick=0;
+                if(j>=nums[i])
+                pick=dp[i-1][j-nums[i]];
+            
+			    int not_pick=dp[i-1][j];
+            
+                dp[i][j]=(pick + not_pick);
+            }
+        }
+        return dp[n-1][target];
+        
+    }
+//Tabulation with Space Optimization
+//Tc->O(N*target)
+//Sc->O(target)+O(target)
+int findTargetSumWays(vector<int>& nums, int d)
+    {
+        int sum=0;
+        int n=nums.size();
+        for(int i=0;i<n;i++)
+        {
+            sum=sum+nums[i];
+        }
+        int target=(sum-d)/2;
+        if(sum-d<0 || (sum-d)%2)
+        return 0;    
+        //vector<vector<int>>dp(n,vector<int>(target+1,0));
+        vector<int> prev(target+1,0);
+        vector<int> curr(target+1,0);
+        if(nums[0]==0)
+        prev[0]=2;
+        else 
+        prev[0]=1;
+        if(nums[0]!=0 && nums[0]<=target)
+        prev[nums[0]]=1;
+        
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<=target;j++)
+            {
+                int pick=0;
+                if(j>=nums[i])
+                pick=prev[j-nums[i]];
+            
+			    int not_pick=prev[j];
+            
+                curr[j]=(pick + not_pick);
+            }
+            prev=curr;
+        }
+        return prev[target];
+        
+    }
+    
+    
