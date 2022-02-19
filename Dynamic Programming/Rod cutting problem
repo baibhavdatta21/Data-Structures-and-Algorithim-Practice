@@ -1,0 +1,118 @@
+//Recursion
+//Tc->O(2^n)
+//Sc->O(n)
+int solver(int i,vector<int> &price,int sum)
+{
+    if(i==1)
+    {
+        if(sum%i==0)
+    	return (sum/i)*price[i-1];
+    }    
+
+    int pick=INT_MIN;
+    if(sum>=i)
+    pick=price[i-1]+solver(i,price,sum-i);
+
+    int not_pick=solver(i-1,price,sum);
+
+    return max(pick,not_pick);
+    		
+}
+int cutRod(vector<int> &price, int sum)
+{
+	// Write your code here.
+    int n=price.size();
+    
+	return solver(n,price,sum);
+}
+//Memoization
+//Tc->O(n*sum)
+//Sc->O(n)+O(n*sum)
+int solver(int i,vector<int> &price,int sum,vector<vector<int>> &dp)
+{
+    if(i==0)
+    {
+        //if(sum%i==0)
+    	return (sum)*price[i];
+    }    
+
+    int pick=INT_MIN;
+    
+    if(dp[i][sum]!=-1)
+    return dp[i][sum];
+    if(sum>=i+1)
+    pick=price[i]+solver(i,price,sum-i-1,dp);
+
+    int not_pick=solver(i-1,price,sum,dp);
+
+    return dp[i][sum]=max(pick,not_pick);
+    		
+}
+int cutRod(vector<int> &price, int sum)
+{
+	// Write your code here.
+    int n=price.size();
+    vector<vector<int>> dp(n+1,vector<int>(sum+1,-1));
+	return solver(n,price,sum,dp);
+}
+
+//Tabulation
+//Tc->O(n*sum)
+//Sc->O(n*sum)
+int cutRod(vector<int> &price, int sum)
+{
+	// Write your code here.
+    int n=price.size();
+    vector<vector<int>> dp(n+1,vector<int>(sum+1,0));
+    
+    for(int i=0;i<=sum;i++)
+    {
+        dp[0][i]=price[0]*i;
+    }
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=sum;j++)
+        {
+            int pick=INT_MIN;
+            if(j>=i+1)
+            pick=price[i]+dp[i][j-i-1];
+
+            int not_pick=dp[i-1][j];
+
+            dp[i][j]=max(pick,not_pick);
+        }
+    }
+    return dp[n-1][sum];
+}    
+//Tabulation with space optimization
+//Tc->O(n*sum)
+//Sc->O(sum)+O(sum)
+int cutRod(vector<int> &price, int sum)
+{
+	// Write your code here.
+    int n=price.size();
+    //vector<vector<int>> dp(n+1,vector<int>(sum+1,0));
+    vector<int> prev(sum+1,0);
+    vector<int> curr(sum+1,0);
+    for(int i=0;i<=sum;i++)
+    {
+       prev[i]=price[0]*i;
+    }
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=sum;j++)
+        {
+            int pick=INT_MIN;
+            if(j>=i+1)
+            pick=price[i]+curr[j-i-1];
+
+            int not_pick=prev[j];
+
+            curr[j]=max(pick,not_pick);
+        }
+        prev=curr;
+    }
+    return prev[sum];
+}    
+
+
