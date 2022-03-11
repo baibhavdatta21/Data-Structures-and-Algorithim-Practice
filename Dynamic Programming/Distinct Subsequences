@@ -1,0 +1,165 @@
+//Recursion
+//Tc->Exponential
+//Sc->O(N+M)(recursion stack space)
+int solver(string s, string t, int i,int j,int n,int m)
+    { 
+        if(j==m)
+        return 1;
+        if(i==n)
+        return 0;
+        
+        int pick=0;
+        int not_pick=0;
+        if(s[i]==t[j])
+        {
+            pick=solver(s,t,i+1,j+1,n,m);
+            not_pick=solver(s,t,i+1,j,n,m);
+        }
+        else
+        {
+            not_pick=solver(s,t,i+1,j,n,m);
+        }
+        
+        return pick+not_pick;
+       
+    }
+    int numDistinct(string s, string t) 
+    {
+        int n=s.size();
+        int m=t.size();
+        //string str="";
+       
+        return solver(s,t,0,0,n,m);
+    }
+    //Memoization
+    //Tc->O(N*M)
+    //Sc->O(N+M)+O(N*M)
+    int solver(string &s, string &t, int i,int j,int &n,int &m,  vector<vector<int>>&dp)
+    { 
+        if(j==m)
+        return 1;
+        if(i==n)
+        return 0;
+        
+        if(dp[i][j]!=-1)
+        return dp[i][j];
+        
+        int pick=0;
+        int not_pick=0;
+        if(s[i]==t[j])
+        {
+            pick=solver(s,t,i+1,j+1,n,m,dp);
+            not_pick=solver(s,t,i+1,j,n,m,dp);
+        }
+        else
+        {
+            not_pick=solver(s,t,i+1,j,n,m,dp);
+        }
+        
+        return dp[i][j]=pick+not_pick;
+       
+    }
+    int numDistinct(string s, string t) 
+    {
+        int n=s.size();
+        int m=t.size();
+        //string str="";
+       vector<vector<int>>dp(n,(vector<int>(m,-1)));
+        return solver(s,t,0,0,n,m,dp);
+    }*/
+    //Tabulation
+    //Tc->O(N*M)
+    //Sc->O(N*M)
+    /*int numDistinct(string s, string t) 
+    {
+        int n=s.size();
+        int m=t.size();
+        //string str="";
+        static int MOD = (int)1e9 + 7;
+        vector<vector<int>>dp(n+1,(vector<int>(m+1,0)));
+        
+         for(int i=0;i<m+1;i++)
+        {
+            dp[n][i]=0;
+        }
+        for(int i=0;i<n+1;i++)
+        {
+            dp[i][m]=1;
+        }
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int j=m-1;j>=0;j--)
+            {
+                int pick=0;
+                int not_pick=0;
+                if(s[i]==t[j])
+                {
+                    pick=dp[i+1][j+1]%MOD;
+                    not_pick=dp[i+1][j]%MOD;
+                }
+                else
+                {
+                     not_pick=dp[i+1][j]%MOD;
+                }
+
+                dp[i][j]=(pick+not_pick)%MOD;
+            }
+        }
+        for(int i=0;i<n+1;i++)
+        {
+            for(int j=0;j<m+1;j++)
+            {
+                cout<<dp[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+        
+        return dp[0][0];
+        
+    }*/
+    //Tabulation with space optimization
+    //Tc->O(N*M)
+    //Sc->O(N+M)
+    int numDistinct(string s, string t)
+    { 
+        int n=s.size();
+        int m=t.size();
+        //string str="";
+        static int MOD = (int)1e9 + 7;
+        //vector<vector<int>>dp(n+1,(vector<int>(m+1,0)));
+        vector<int>prev(m+1,0);
+        vector<int>cur(m+1,0);
+        
+        prev[m]=cur[m]=1;
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int j=m-1;j>=0;j--)
+            {
+                int pick=0;
+                int not_pick=0;
+                if(s[i]==t[j])
+                {
+                    pick=prev[j+1]%MOD;
+                    not_pick=prev[j]%MOD;
+                }
+                else
+                {
+                     not_pick=prev[j]%MOD;
+                }
+
+                cur[j]=(pick+not_pick)%MOD;
+            }
+            prev=cur;
+        }
+        /*for(int i=0;i<n+1;i++)
+        {
+            for(int j=0;j<m+1;j++)
+            {
+                cout<<dp[i][j]<<" ";
+            }
+            cout<<endl;
+        }*/
+        
+        return prev[0];
+        
+    }
