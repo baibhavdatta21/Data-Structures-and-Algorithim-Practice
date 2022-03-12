@@ -1,0 +1,152 @@
+//Recursion
+//TC->Exponential
+//Sc->Recursion stack space
+int solver(int i,int j,string s,string r)
+    {
+        if(i==-1)
+        return j+1;
+        if(j==-1)
+        return i+1;
+        if(s[i]==r[j])
+        {
+           return solver(i-1, j-1,s,r);
+        }
+        else
+        {
+            int del=solver(i-1,j,s,r);
+            int insert=solver(i,j-1,s,r);
+            int replace=solver(i-1,j-1,s,r);
+            return 1+min(del,min(insert,replace));
+        }
+       
+    }
+    int minDistance(string word1, string word2) 
+    {
+        int n=word1.size();
+        int m=word2.size();
+        return solver(n-1,m-1,word1,word2);
+        
+    }
+//Memoization
+//TC->O(n*m)
+//Sc->O(n+m)+O(n*m)
+int solver(int i,int j,string s,string r,vector<vector<int>>&dp)
+    {
+        if(i==-1)
+        return j+1;
+        if(j==-1)
+        return i+1;
+        if(dp[i][j]!=-1)
+        return dp[i][j];
+        if(s[i]==r[j])
+        {
+           return solver(i-1, j-1,s,r,dp);
+        }
+        else
+        {
+            int del=solver(i-1,j,s,r,dp);
+            int insert=solver(i,j-1,s,r,dp);
+            int replace=solver(i-1,j-1,s,r,dp);
+            return dp[i][j]=1+min(del,min(insert,replace));
+        }
+       
+    }
+    int minDistance(string word1, string word2) 
+    {
+        int n=word1.size();
+        int m=word2.size();
+        vector<vector<int>>dp(n,vector<int>(m,-1));
+        return solver(n-1,m-1,word1,word2,dp);
+    }*/
+    
+  //Tabulation
+  //TC->O(n*m)
+  //Sc->O(n*m)
+    /*int minDistance(string s, string r) 
+    {
+        
+        int n=s.size();
+        int m=r.size();
+        vector<vector<int>>dp(n+1,vector<int>(m+1,0));
+        for(int i=0;i<n+1;i++)
+        {
+            dp[i][0]=i;
+        }
+        for(int j=0;j<m+1;j++)
+        {
+            dp[0][j]=j;
+        }
+        for(int i=1;i<n+1;i++)
+        {
+            for(int j=1;j<m+1;j++)
+            {
+                if(s[i-1]==r[j-1])
+                {
+                   dp[i][j]=dp[i-1][j-1];
+                }
+                else
+                {
+                    int del=dp[i-1][j];
+                    int insert=dp[i][j-1];
+                    int replace=dp[i-1][j-1];
+                    dp[i][j]=1+min(del,min(insert,replace));
+                }
+            }
+        }
+        for(int i=0;i<n+1;i++)
+        {
+            for(int j=0;j<m+1;j++)
+            {
+                cout<<dp[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+        return dp[n][m];
+    }*/
+    
+  //Tabulation with space opti
+  //TC->O(n*m)
+  //Sc->O(n+m)
+    int minDistance(string s, string r) 
+    {
+        
+        int n=s.size();
+        int m=r.size();
+        //vector<vector<int>>dp(n+1,vector<int>(m+1,0));
+        vector<int>prev(m+1,0);
+        vector<int>cur(m+1,0);
+        
+        for(int j=0;j<m+1;j++)
+        {
+            prev[j]=j;
+        }
+        for(int i=1;i<n+1;i++)
+        {
+            cur[0]=i;
+            for(int j=1;j<m+1;j++)
+            {
+                
+                if(s[i-1]==r[j-1])
+                {
+                   cur[j]=prev[j-1];
+                }
+                else
+                {
+                    int del=prev[j];
+                    int insert=cur[j-1];
+                    int replace=prev[j-1];
+                    cur[j]=1+min(del,min(insert,replace));
+                }
+            }
+            prev=cur;
+        }
+        for(int i=0;i<n+1;i++)
+        {
+            for(int j=0;j<m+1;j++)
+            {
+                cout<<prev[j]<<" ";
+            }
+            cout<<endl;
+        }
+        return prev[m];
+    }
