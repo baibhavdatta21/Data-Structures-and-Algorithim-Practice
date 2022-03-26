@@ -1,0 +1,277 @@
+//Recursive 
+//using 3D Dp
+//TC->exponential
+//SC->recursive stack space
+
+/*int solver(int i,bool picked,int count,vector<int>& prices)
+{
+    if(i==prices.size())
+    return 0;
+    int profit;
+    if(picked==false)
+    {
+        if(count<2)
+        profit=max((-prices[i]+solver(i+1,true,count+1,prices)),(solver(i+1,picked,count,prices)));
+        else
+        profit=solver(i+1,picked,count,prices);
+    }
+    else
+    {
+        profit=max(prices[i]+solver(i+1,false,count,prices),(solver(i+1,picked,count,prices)));
+    }
+    return profit;
+                   
+}
+int maxProfit(vector<int>& prices) 
+{
+    
+    return solver(0,false,0,prices);
+}*/
+
+//Memoized
+//using 3D Dp
+//TC->O(N*2*3)
+//SC->recursive stack space+O(N*2*3)
+/*int solver(int i,bool picked,int count,vector<int>& prices,vector<vector<vector<int>>>&dp)
+{
+    if(i==prices.size())
+    return 0;
+    
+    if(dp[i][picked][count]!=-1)
+    return dp[i][picked][count];
+    
+    int profit;
+    if(picked==false)
+    {
+        if(count<2)
+        profit=max((-prices[i]+solver(i+1,true,count+1,prices,dp)),(solver(i+1,picked,count,prices,dp)));
+        else
+        profit=solver(i+1,picked,count,prices,dp);
+    }
+    else
+    {
+        profit=max(prices[i]+solver(i+1,false,count,prices,dp),(solver(i+1,picked,count,prices,dp)));
+    }
+    return dp[i][picked][count]=profit;
+                   
+}
+int maxProfit(vector<int>& prices) 
+{
+    int n=prices.size();
+    vector<vector<vector<int>>>dp(n,(vector<vector<int>>(2,(vector<int>(3,-1)))));
+    return solver(0,false,0,prices,dp);
+}*/
+//Tabulation
+//using 3D Dp
+//TC->O(N*2*3)
+//SC->O(N*2*3)
+/*int maxProfit(vector<int>& prices)
+{
+    int n=prices.size();
+    vector<vector<vector<int>>>dp(n+1,(vector<vector<int>>(2,(vector<int>(3,0)))));
+    for(int i=0;i<2;i++)
+    {
+        for(int j=0;j<3;j++)
+        {
+            dp[n][i][j]=0;
+        }
+    }
+    for(int i=n-1;i>=0;i--)
+    {
+        for(int j=1;j>=0;j--)
+        {
+            for(int k=2;k>=0;k--)
+            {
+                int profit;
+                if(j==0)
+                {
+                    if(k<2)
+                    profit=max(-prices[i]+dp[i+1][1][k+1], dp[i+1][j][k]);
+                    else
+                    profit=dp[i+1][j][k];
+                }
+                else
+                {
+                    profit=max(prices[i]+dp[i+1][0][k], dp[i+1][j][k]);
+                }
+                dp[i][j][k]=profit;
+            }
+        }
+    }
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<2;j++)
+        {
+            for(int k=0;k<3;k++)
+            {
+                cout<<dp[i][j][k]<<" ";
+            }
+            cout<<endl;
+        }
+        //cout<<endl;
+    }
+    return dp[0][0][0];        
+}*/
+//Tabulation+space optimization
+//using 3D Dp
+//TC->O(N*2*3)
+//SC->O(1)
+/*int maxProfit(vector<int>& prices)
+{
+    int n=prices.size();
+    vector<vector<int>>prev(2,(vector<int>(3,0)));
+     vector<vector<int>>cur(2,(vector<int>(3,0)));
+    for(int i=0;i<2;i++)
+    {
+        for(int j=0;j<3;j++)
+        {
+            prev[i][j]=0;
+        }
+    }
+    for(int i=n-1;i>=0;i--)
+    {
+        for(int j=1;j>=0;j--)
+        {
+            for(int k=2;k>=0;k--)
+            {
+                int profit;
+                if(j==0)
+                {
+                    if(k<2)
+                    profit=max(-prices[i]+prev[1][k+1], prev[j][k]);
+                    else
+                    profit=prev[j][k];
+                }
+                else
+                {
+                    profit=max(prices[i]+prev[0][k], prev[j][k]);
+                }
+                cur[j][k]=profit;
+            }
+        }
+        prev=cur;
+    }
+    return prev[0][0];        
+}*/
+
+//Using a more optimised methord
+//Converting my 3d dp to 2d dp
+//here take in transactions
+
+//RECURSIVE
+//TC->exponential
+//SC->recursive stack space
+
+/*int solver(int i,int trans,vector<int>& prices)
+{
+    if(i==prices.size() || trans==4)
+    {
+        return 0;
+    }
+    int profit;
+    if(trans%2==0)
+    {
+        profit=max(-prices[i]+solver(i+1,trans+1,prices),solver(i+1,trans,prices));
+    }
+    else
+    {
+        profit=max(prices[i]+solver(i+1,trans+1,prices),solver(i+1,trans,prices));
+    }
+    return profit;
+}
+int maxProfit(vector<int>& prices)
+{
+    return solver(0,0,prices);
+}*/
+
+//Memoization
+//using 2D Dp
+//Tc->O(N*4)
+//SC->O(N*4)+stack space
+/*int solver(int i,int trans,vector<int>&prices,vector<vector<int>>&dp)
+{
+    if(i==prices.size()||trans==4)
+    return 0;
+    
+    if(dp[i][trans]!=-1)
+    return dp[i][trans];
+    
+    int profit;
+    if(trans%2==0)
+    profit=max(-prices[i]+solver(i+1,trans+1,prices,dp),solver(i+1,trans,prices,dp));
+    else
+    profit=max(prices[i]+solver(i+1,trans+1,prices,dp),solver(i+1,trans,prices,dp));
+    
+    return dp[i][trans]=profit;
+}
+int maxProfit(vector<int>& prices)
+{
+    int n=prices.size();
+    vector<vector<int>> dp(n,vector<int>(4,-1));
+    return solver(0,0,prices,dp);
+}*/
+//Tabulation
+//using 2D Dp
+//Tc->O(N*4)
+//SC->O(N*4)
+/*int maxProfit(vector<int>& prices)
+{
+    int n=prices.size();
+    vector<vector<int>> dp(n+1,vector<int>(4+1,0));
+    for(int i=0;i<5;i++)
+    {
+        dp[n][i]=0;
+    }
+    for(int i=0;i<=n;i++)
+    dp[i][4]=0;
+    
+    for(int i=n-1;i>=0;i--)
+    {
+        for(int j=3;j>=0;j--)
+        {
+            int profit;
+            if(j%2==0)
+            profit=max(-prices[i]+dp[i+1][j+1],dp[i+1][j]);
+            else
+            profit=max(prices[i]+dp[i+1][j+1],dp[i+1][j]);
+
+             dp[i][j]=profit;   
+
+        }
+    }
+    return dp[0][0];
+}*/
+
+//Tabulation+Space optimiztion
+//Tc->O(N*4)
+//SC->O(1)
+int maxProfit(vector<int>& prices)
+{
+    int n=prices.size();
+    vector<int>prev(4+1,0);
+    vector<int>cur(4+1,0);
+    for(int i=0;i<5;i++)
+    {
+        prev[i]=0;
+    }
+    for(int i=0;i<=n;i++)
+    prev[4]=0;
+    
+    for(int i=n-1;i>=0;i--)
+    {
+        for(int j=3;j>=0;j--)
+        {
+            int profit;
+            if(j%2==0)
+            profit=max(-prices[i]+prev[j+1],prev[j]);
+            else
+            profit=max(prices[i]+prev[j+1],prev[j]);
+
+             cur[j]=profit;   
+
+        }
+        prev=cur;
+    }
+    return cur[0];
+
+}
