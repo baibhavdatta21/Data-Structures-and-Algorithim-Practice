@@ -1,0 +1,127 @@
+/*int solver(int i,bool buy,vector<int>& prices)
+    {
+        if(i==prices.size())
+        return 0;
+        
+        int profit;
+        if(buy==false)
+        {
+            profit=max(-prices[i]+solver(i+1,true,prices),0+solver(i+1,buy,prices));
+        }
+        else
+        {
+            profit=max(prices[i]+solver(i+1,false,prices),0+solver(i+1,buy,prices));
+        }
+        return profit;
+    }
+    int maxProfit(vector<int>& prices) 
+    {
+        int n=prices.size();
+        return solver(0,false,prices);
+    } */ //Recursive  
+    /*int solver(int i,bool buy,vector<int>& prices,vector<vector<int>>&dp)
+    {
+        if(i==prices.size())
+        return 0;
+        if(dp[i][buy]!=-1)
+        return dp[i][buy];
+        int profit;
+        if(buy==false)
+        {
+            profit=max(-prices[i]+solver(i+1,true,prices,dp),0+solver(i+1,buy,prices,dp));
+        }
+        else
+        {
+            profit=max(prices[i]+solver(i+1,false,prices,dp),0+solver(i+1,buy,prices,dp));
+        }
+        return dp[i][buy]=profit;
+    }
+    int maxProfit(vector<int>& prices) 
+    {
+        int n=prices.size();
+        vector<vector<int>>dp(n,vector<int>(2,-1));
+        return solver(0,false,prices,dp);
+    } */
+    /*int maxProfit(vector<int>& prices) 
+    {
+        int n=prices.size();
+        vector<vector<int>>dp(n+1,vector<int>(2,0));
+        dp[n][0]=0;
+        dp[n][1]=0;
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int j=1;j>=0;j--)
+            {
+                int profit;
+                if(j==0)
+                {
+                    profit=max(-prices[i]+dp[i+1][1],0+dp[i+1][j]);
+                }
+                else
+                {
+                    profit=max(prices[i]+dp[i+1][0],0+dp[i+1][j]);
+                }
+                dp[i][j]=profit;
+            }
+        }
+        for(int i=0;i<=n;i++)
+        {
+            for(int j=0;j<2;j++)
+            {
+                cout<<dp[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+        return dp[0][0];
+    }*///Main is this one
+    /*int maxProfit(vector<int>& prices)
+    {
+        int n=prices.size();
+        vector<int>prev(2);
+        vector<int>cur(2);
+        prev[0]=0;
+        prev[1]=0;
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int j=1;j>=0;j--)
+            {
+                int profit;
+                if(j==0)
+                {
+                    profit=max(-prices[i]+prev[1],prev[j]);
+                }
+                else
+                {
+                    profit=max(prices[i]+prev[0],0+prev[j]);
+                }
+                cur[j]=profit;
+            }
+            prev=cur;
+        }
+        return prev[0];
+        
+    }*/
+    int maxProfit(vector<int>& prices)
+    {
+        int n=prices.size();
+        int ahead_nb=0;
+        int ahead_b=0;
+        int cur_nb,cur_b;
+        
+        for(int i=n-1;i>=0;i--)
+        {
+            int profit;
+            
+            cur_b=max(-prices[i]+ahead_nb,ahead_b);
+
+
+            cur_nb=max(prices[i]+ahead_b,ahead_nb);
+            
+            
+            ahead_nb=cur_nb;
+            ahead_b=cur_b;
+            
+        }
+        return ahead_b;
+            
+    }
