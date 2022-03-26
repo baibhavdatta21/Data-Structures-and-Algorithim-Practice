@@ -1,0 +1,178 @@
+int solver(int i,bool picked,int count,int k,vector<int>& prices)
+    {
+        if(i==prices.size())
+        return 0;
+        
+        int profit;
+        if(picked==false)
+        {
+            if(count<k)
+            {
+                profit=max(-prices[i]+solver(i+1,true,count+1,k,prices),0+solver(i+1,picked,count,k,prices));
+            }
+            else
+            {
+                profit=0+solver(i+1,picked,count,k,prices);
+            }
+            
+        }
+        else
+        {
+            profit=max(prices[i]+solver(i+1,false,count,k,prices),0+solver(i+1,picked,count,k,prices));
+        }
+        
+        return profit;
+    }
+    int maxProfit(int k, vector<int>& prices)
+    {
+        return solver(0,false,0,k,prices);
+    }
+    */
+    
+    /*int solver(int i,bool picked,int count,int k,vector<int>& prices,vector<vector<vector<int>>>&dp)
+    {
+        if(i==prices.size())
+        return 0;
+        
+        if(dp[i][picked][count]!=-1)
+        return dp[i][picked][count];
+        
+        int profit;
+        if(picked==false)
+        {
+            if(count<k)
+            {
+                profit=max(-prices[i]+solver(i+1,true,count+1,k,prices,dp),0+solver(i+1,picked,count,k,prices,dp));
+            }
+            else
+            {
+                profit=0+solver(i+1,picked,count,k,prices,dp);
+            }
+            
+        }
+        else
+        {
+            profit=max(prices[i]+solver(i+1,false,count,k,prices,dp),0+solver(i+1,picked,count,k,prices,dp));
+        }
+        
+        return dp[i][picked][count]=profit;
+    }
+    int maxProfit(int k, vector<int>& prices)
+    {
+        int n=prices.size();
+        vector<vector<vector<int>>>dp(n+1,vector<vector<int>>(2,vector<int>(k+1,-1)));
+        return solver(0,false,0,k,prices,dp);
+    }*/
+    /*int maxProfit(int k, vector<int>& prices)
+    {
+        int n=prices.size();
+        vector<vector<vector<int>>>dp(n+1,vector<vector<int>>(2,vector<int>(k+1,0)));
+        for(int i=0;i<2;i++)
+        {
+            for(int j=0;j<k;j++)
+            {
+                dp[n][i][j]=0;
+            }
+        }
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int j=1;j>=0;j--)
+            {
+                for(int count=k;count>=0;count--)
+                {
+                    int profit;
+                    if(j==0)
+                    {
+                        if(count<k)
+                        {
+                            profit=max(-prices[i]+dp[i+1][true][count+1],0+dp[i+1][j][count]);
+                        }
+                        else
+                        {
+                            profit=0+dp[i+1][j][count];
+                        }
+
+                    }
+                    else
+                    {
+                        profit=max(prices[i]+dp[i+1][false][count],0+dp[i+1][j][count]);
+                    }
+                    dp[i][j][count]=profit;
+                }
+
+            }
+        }
+        return dp[0][0][0];
+    }*/
+    //now trying it out with 2d dp using transactions
+   /* int solver(int i,int trans, int k,vector<int>& prices)
+    {
+        if(i==prices.size() || trans==2*k)
+        return 0;
+        
+        int profit;
+        if(trans%2==0)
+        {
+           profit=max(-prices[i]+solver(i+1,trans+1,k,prices),solver(i+1,trans,k,prices));
+        }
+        else
+        {
+            profit=max(prices[i]+solver(i+1,trans+1,k,prices),solver(i+1,trans,k,prices));
+        }
+        return profit;
+    }
+    int maxProfit(int k, vector<int>& prices)
+    {
+        return solver(0,0,k,prices);
+    }*/
+    /*int solver(int i,int trans, int k,vector<int>& prices,vector<vector<int>>&dp)
+    {
+        if(i==prices.size() || trans==2*k)
+        return 0;
+        
+        int profit;
+        if(trans%2==0)
+        {
+           profit=max(-prices[i]+solver(i+1,trans+1,k,prices),solver(i+1,trans,k,prices));
+        }
+        else
+        {
+            profit=max(prices[i]+solver(i+1,trans+1,k,prices),solver(i+1,trans,k,prices));
+        }
+        return profit;
+    }
+    int maxProfit(int k, vector<int>& prices)
+    {
+        int n=prices.size();
+        vector<vector<int>>dp(n,(vector<int>(2*k,-1)));
+        return solver(0,0,k,prices,dp);
+    }*/
+    int maxProfit(int k, vector<int>& prices)
+    {
+        int n=prices.size();
+        vector<vector<int>>dp(n+1,(vector<int>(2*k+1,-1)));
+        
+        for(int i=0;i<=n;i++)
+        dp[i][2*k]=0;
+        for(int i=0;i<=2*k;i++)
+        dp[n][i]=0;
+        
+        
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int trans=2*k-1;trans>=0;trans--)
+            {
+                int profit;
+                if(trans%2==0)
+                {
+                   profit=max(-prices[i]+dp[i+1][trans+1],dp[i+1][trans]);
+                }
+                else
+                {
+                    profit=max(prices[i]+dp[i+1][trans+1],dp[i+1][trans]);
+                }
+                 dp[i][trans]=profit;
+            }
+        }
+        return dp[0][0];
+    }
