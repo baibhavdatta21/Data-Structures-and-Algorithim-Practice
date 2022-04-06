@@ -1,0 +1,170 @@
+//Memoization
+//TC->O(N*N)
+//SC->O(N)+O(N*N)
+
+/*int solver(int i,vector<int>& nums,int chosen,vector<vector<int>>&dp)
+    {
+        if(i==nums.size())
+        return 0;
+        
+        
+        if(dp[i][chosen+1]!=-1)
+        return dp[i][chosen+1];
+        int pick=0;
+        if(chosen==-1||nums[chosen]<nums[i])
+        pick=1+solver(i+1,nums,i,dp);
+        
+        int not_pick=solver(i+1,nums,chosen,dp);
+        
+        return dp[i][chosen+1]=max(pick,not_pick);
+    }
+    
+    int lengthOfLIS(vector<int>& nums) 
+    {
+        int n=nums.size();
+       // nums[0]=INT_MIN;
+        vector<vector<int>>dp(n,vector<int>(n+1,-1));
+        return solver(0,nums,-1,dp);
+    }*/
+    //Tabulation
+    //TC->O(N*N)
+    //SC->O(N*N)
+   /* int lengthOfLIS(vector<int>& nums) 
+    {
+        int n=nums.size();
+        vector<vector<int>>dp(n+1,vector<int>(n+2,0));
+        for(int i=0;i<=n;i++)
+        {
+            dp[n][i]=0;
+            
+        }
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int j=i-1;j>=-1;j--)
+            {
+                int pick=0;
+                if(j==-1 || nums[j]<nums[i])
+                pick=1+dp[i+1][i+1];           //Asking that particular node toke kyu nite pare che?
+
+                int not_pick=dp[i+1][j+1];     // Jodi na then  simply toke nebo na
+                
+
+                dp[i][j+1]=max(pick,not_pick);
+            }
+        }
+        for(int i=0;i<n+1;i++)
+        {
+            for(int j=0;j<n+2;j++)
+            {
+                cout<<dp[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+        return dp[0][-1+1];
+        
+    }*/
+    //Here's a different approch with 1dp
+    /*int lengthOfLIS(vector<int>& nums) 
+    {
+        int n=nums.size();
+        vector<int> dp(n,1);
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(nums[i]>nums[j])
+                {
+                    dp[i]=max(dp[i],1+dp[j]);
+                }
+            }
+        }
+        int maxi=0;
+         for(int i=0;i<n;i++)
+        maxi=max(dp[i],maxi);
+        return maxi;
+        
+    }*/
+    //Now we are trying to print the hash array
+    /*int lengthOfLIS(vector<int>& nums) 
+    {
+        int n=nums.size();
+        vector<int> dp(n,1);
+        vector<int> hash(n);
+        int l_index=0;
+        hash[0]=0;
+        int maxi=1;
+        for(int i=1;i<n;i++)
+        {
+            hash[i]=i;
+            for(int j=0;j<i;j++)
+            {
+                
+                if(nums[i]>nums[j] && 1+dp[j]>dp[i])
+                {
+                    
+                    dp[i]=1+dp[j];
+                    hash[i]=j;
+                   
+                }
+                if(dp[i]>maxi)
+                {
+                    maxi=dp[i];
+                    l_index=i;
+                }
+            }
+        }
+        
+        
+        vector<int> ans;
+       ans.push_back(nums[l_index]);
+        while(hash[l_index]!=l_index)
+        {
+            l_index=hash[l_index];
+            ans.push_back(nums[l_index]);
+        }
+        reverse(ans.begin(),ans.end());
+        
+        for(auto it:ans)
+        cout<<it<<" ";
+        return maxi;
+    }*/
+    
+    with Binary Search
+    //TC->O(NlogN)
+    //SC->O(N)
+    
+    int lower_bond(vector<int> &seq,int element){
+    int lo=0;
+    int hi=seq.size()-1;
+    int mid;
+    while(lo<hi){
+        mid=lo+(hi-lo)/2;
+        if(element<=seq[mid])
+            hi=mid;
+        else{
+            lo=mid+1;
+        }
+        
+    }
+    return lo;
+}
+    
+    int lengthOfLIS(vector<int>& nums)
+    {
+       
+        vector<int> ans;
+        int n=nums.size();
+        ans.push_back(nums[0]);
+         
+        for(int i=1;i<n;i++)
+        {
+            if(nums[i]>ans[ans.size()-1])
+            ans.push_back(nums[i]);
+            else
+            {
+                int ind=lower_bond(ans,nums[i]);
+                ans[ind]=nums[i];
+            }
+        }
+        return ans.size();
+    }
