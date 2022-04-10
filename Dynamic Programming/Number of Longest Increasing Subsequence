@@ -1,0 +1,39 @@
+int findNumberOfLIS(vector<int>& nums) 
+    {
+        int n=nums.size();
+        if(n==1)
+        return 1;
+        
+        vector<int> dp(n,1);
+        vector<int>count(n,1);
+        int maxi=1;
+        for(int i=1;i<n;i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                 if(nums[i]>nums[j] && dp[i]<dp[j]+1)
+                 {
+                     dp[i]=1+dp[j];
+                     count[i]=count[j]; //Inheriting 
+                                        //We start off a fresh  all together, new count as our lis now has changed
+                                        //All to gether new lis
+                 }
+                 else if(nums[i]>nums[j] && dp[i]==dp[j]+1)// tui o amake max ta potentially die paris
+                 {
+                      count[i]+=count[j];   //taking in the ones who could provide me with the same lis
+                 }
+                 if(dp[i]>maxi)
+                {
+                    maxi=dp[i];
+                }
+            }
+
+        }
+        int ans=0;
+        for(int i=0;i<n;i++)
+        {
+            if(dp[i]==maxi)
+             ans+=count[i];          //Taking all the values with same maxi
+        }
+        return ans;
+    }
