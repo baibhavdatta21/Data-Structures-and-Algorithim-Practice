@@ -1,0 +1,186 @@
+// void solver()
+// {
+//     int n;
+//     cin>>n;
+//     vector<int>v(n);
+//     for(int i=0;i<n;i++)
+//     cin>>v[i];
+    
+//     for(int i=0;i<n;i++)
+//     {
+//         int min=i;
+//         for(int j=i+1;j<n;j++)
+//         {
+//             if(v[min]>v[j])
+//             min=j;
+//         }
+//         swap(v[min],v[i]);
+
+//     }
+//     cout<<"Selection Sort(finding the minimum element) worst case->TC:O(N*N) space complexity->SC->O(N)"<<endl;
+//     for(int i=0;i<n;i++)
+//     cout<<v[i]<<" ";
+    
+// } 
+// void solver()
+// {
+//     int n;
+//     cin>>n;
+//     vector<int>v(n);
+//     for(int i=0;i<n;i++)
+//     cin>>v[i];
+//     for(int i=0;i<n;i++)
+//     {
+//         int swapped=0; // IMP it's helping me to directly break when swaps are zero as a result helping us to get the TC as O(N)
+//         for(int j=0;j<n-i-1;j++)
+//         {
+//             if(v[j]>v[j+1])
+//             {
+//                 swap(v[j],v[j+1]);
+//                 swapped++;
+//             }
+//         }
+//         if(swapped==0)
+//         break;
+//     }
+//     cout<<"Bubble Sort Avg TC->O(N*N) Worst Case->O(N*N) Best Case->O(N)"<<endl;
+//     for(int i=0;i<n;i++)
+//     cout<<v[i]<<" ";
+// }
+// void solver()
+// {
+//     int n;
+//     cin>>n;
+//     vector<int>v(n);
+//     for(int i=0;i<n;i++)
+//     cin>>v[i];
+//     for(int i=1;i<n;i++)
+//     {
+//         int key=v[i];
+//         int j=i-1;
+//         while(j>=0 && v[j]>key)
+//         {
+//             v[j+1]=v[j];
+//             j=j-1;
+//         }
+//         v[j+1]=key;
+//     }
+//     cout<<"Insertion Sort Avg Tc->O(N*N) Worst ->O(N*N) Best->O(N)"<<endl;
+    // for(int i=0;i<n;i++)
+    // cout<<v[i]<<" ";
+// }
+// int parti(int l,int h,vector<int>&v)
+// {
+//     int p=v[h];
+//     int i=l-1;
+//     for(int j=l;j<h;j++)
+//     {
+//         if(p>v[j])
+//         {
+//             i++;
+//             swap(v[j],v[i]);
+
+//         }
+//     }
+//     i++;
+//     swap(v[i],v[h]);
+//     return i;
+// }
+// void qs(int l,int h,vector<int>&v)
+// {
+//     if(h>l)
+//     {
+//         int p=parti(l,h,v);
+//         qs(l,p-1,v);
+//         qs(p+1,h,v);
+//     }
+// }
+// void solver()
+// {
+//     int n;
+//     cin>>n;
+//     vector<int>v(n);
+//     for(int i=0;i<n;i++)
+//     cin>>v[i];
+//     qs(0,n-1,v);
+//     cout<<"quick sort worst->O(N*N) avg->O(nlogN) best->O(nlogn)"<<endl;
+//     for(int i=0;i<n;i++)
+//     cout<<v[i]<<" ";
+// }
+void merge(int l,int m,int h,vector<int>&v)
+{
+    int n1=m-l+1;//1
+    int n2=h-m;//1
+
+    vector<int>c(n1+n2);//2
+
+    int i=l;
+    int j=m+1;
+    int k=0;
+    //cout<<j<<endl;
+    while(i<=m && j<=h)
+    {
+        if(v[i]<v[j])
+        {
+            c[k]=v[i];
+            i++;
+        }
+        else 
+        {
+            c[k]=v[j];
+            j++;
+            //cout<<"ok"<<endl;
+        }
+        k++;
+
+    }
+    // for(int i=0;i<n1+n2;i++)
+    // {
+    //     cout<<c[i]<<endl;
+    //     //v[j]=c[i];
+    //     j++;
+    // }
+    while(i<=m)
+    {
+        c[k]=v[i];
+        i++;
+        k++;
+    }
+    while(j<=h)
+    {
+        c[k]=v[j];
+        j++;
+        k++;
+    }
+    j=l;
+    for(int i=0;i<n1+n2;i++)
+    {
+        //cout<<c[i]<<endl;
+        v[j]=c[i];
+        j++;
+    }
+}
+void ms(int l,int h,vector<int>&v)
+{
+    if(h>l)
+    {
+        int mid=(h+l)/2;//0
+        ms(l,mid,v);//0 ,0
+        ms(mid+1,h,v);//1 1
+        //cout<<l<<" "<<mid<<" "<<h<<endl;
+        merge(l,mid,h,v);//0 0 1
+    }
+}
+void solver()
+{
+    int n;
+    cin>>n;
+    vector<int>v(n);
+    for(int i=0;i<n;i++)
+    cin>>v[i];
+
+    ms(0,n-1,v);
+    cout<<"merge sort worst->O(N*N) avg->O(nlogN) best->O(nlogn)"<<endl;
+    for(int i=0;i<n;i++)
+    cout<<v[i]<<" ";
+}
